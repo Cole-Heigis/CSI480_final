@@ -2,7 +2,7 @@
 import random
 from colorama import Fore, Back, Style
 MAX_TRIES = 4
-NUM_BOARDS = 3
+NUM_BOARDS = 8
 game = []
 wordFile = open('words.txt', 'r')
 validWords = wordFile.read()
@@ -18,17 +18,32 @@ def getRandWord():
     index = random.randrange(0, len(validWords))
     return validWords[index]
 
+def printValidMoves(words, guess):
+
+    validMoves = [] 
+    invalidMoves = []
+    for word in validWords: #look through all words
+        for letter in guess: #look through letters in the guess array
+            if letter == 0 and letter in word: #if the letter isn't green or yellow and is in a word then its an invalid word
+                invalidMoves.append(word)
+                break
+        validMoves.append(word)
+
 
 def eval(board, guessWord, guessNum):
+    returnValues = [0, 0, 0, 0, 0]
     for pastGuessWord in board.board:
         if pastGuessWord:
             for i in range(5):
                 if pastGuessWord[i] == board.word[i]:
                     print(Back.GREEN + pastGuessWord[i], end = '')
+                    returnValues[i] = 2
                 elif pastGuessWord[i] in board.word:
                     print(Back.YELLOW + pastGuessWord[i], end = '')
+                    returnValues[i] = 1
                 else:
                     print(Back.WHITE+ pastGuessWord[i], end = '')
+                    returnValues[i] = 0
             print(Style.RESET_ALL)
     for i in range(MAX_TRIES - guessNum):
         print(Back.WHITE+ '_____', end = '')    
@@ -39,13 +54,14 @@ def eval(board, guessWord, guessNum):
         print("YOU WON!!!")
         for board in game:
             if not board.solved:
-                return True
-        return False
+                return returnValues
+        return returnValues
     if guessNum >= MAX_TRIES:
         print("Out of time")
-        return False
+        return returnValues
     print('\n')
-    return True
+    printValidMoves(board.word, returnValues)
+    return returnValues
 
 
 def play(words):
@@ -58,7 +74,7 @@ def play(words):
         if guess in validWords:
             for board in game:
                 board.board[guessNum]=guess
-                playing = eval(board, guess, guessNum)
+                playing = (sum(eval(board, guess, guessNum)) < 10)
             guessNum += 1
 
 if __name__=="__main__": 
