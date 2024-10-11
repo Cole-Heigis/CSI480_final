@@ -7,6 +7,8 @@ game = []
 wordFile = open('words.txt', 'r')
 validWords = wordFile.read()
 validWords = validWords.split('\n')\
+
+# random comment for test
     
 class Board:
     def __init__(self, word):
