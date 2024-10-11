@@ -39,14 +39,6 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
     ```bash
     python main.py
     ```
-
-### Example
-
-```bash
-# Example command or API usage
-curl -X GET http://example.com/api
-```
-
 ## License
 
 The MIT License (MIT)
