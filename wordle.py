@@ -8,7 +8,6 @@ wordFile = open('words.txt', 'r')
 validWords = wordFile.read()
 validWords = validWords.split('\n')\
 
-# random comment for test
     
 class Board:
     def __init__(self, word):
@@ -87,3 +86,38 @@ if __name__=="__main__":
     for word in words:
         game.append(Board(word))
     play(words)
+
+
+
+# its the eval function but it does no print anything (for ai mostly)
+def evalNoPrint(guessWord, board):
+    score = 0
+
+    # if the guess letter is in the right spot add 2, if its just in the word add 1
+    for i in range(5):
+        if guessWord[i] == board.word[i]:
+            score += 2
+        elif guessWord[i] in board.word:
+            score += 1
+
+    # if the word is completly wrong make it a negative number
+    if score == 0:
+        return -1
+    
+    return score
+    
+
+
+
+# goes through every valid move and gets the one with the highest value
+def findBestMove(validMoves):
+    bestMoveValue = -100
+    bestMove = ""
+
+    for move in validMoves:
+        if evalNoPrint(move) > bestMoveValue:
+            bestMoveValue = evalNoPrint
+            bestMove = move
+    
+    return move
+
