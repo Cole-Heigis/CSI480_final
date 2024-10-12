@@ -12,10 +12,9 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
 ## Installation
 
 ### Prerequisites
-- 
+- Python 3
 
 ### Steps
-(TEMPORARY)
 1. Clone the repository:
     ```bash
     git clone https://github.com/Cole-Heigis/CSI480_final.git
@@ -26,18 +25,15 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
     ```
 3. Install dependencies:
     ```bash
-    pip install -r requirements.txt
+    pip install colorama
 
-    # For JavaScript projects:
-    npm install
-    ```
 
 ## Usage
 
 ### Running the Project
 1. Run the main script or entry point:
     ```bash
-    python main.py
+    python worlde.py
     ```
 ## License
 
