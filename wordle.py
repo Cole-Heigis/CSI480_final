@@ -20,16 +20,17 @@ def getRandWord():
     index = random.randrange(0, len(validWords))
     return validWords[index]
 
-def printValidMoves(words, guess):
+def getValidMoves(words, guess):
 
     validMoves = [] 
     invalidMoves = []
     for word in validWords: #look through all words
         for letter in guess: #look through letters in the guess array
-            if letter == 0 and letter in word: #if the letter isn't green or yellow and is in a word then its an invalid word
+            if letter == 0 and str(letter) in word: #if the letter isn't green or yellow and is in a word then its an invalid word
                 invalidMoves.append(word)
                 break
         validMoves.append(word)
+    return validMoves
 
 
 def eval(board, guessWord, guessNum):
@@ -50,7 +51,7 @@ def eval(board, guessWord, guessNum):
     for i in range(MAX_TRIES - guessNum):
         print(Back.WHITE+ '_____', end = '')    
         print(Style.RESET_ALL)
-        
+
     if guessWord == board.word:
         board.solved = True
         print("YOU WON!!!")
@@ -62,7 +63,9 @@ def eval(board, guessWord, guessNum):
         print("Out of time")
         return returnValues
     print('\n')
-    printValidMoves(board.word, returnValues)
+    for x in getValidMoves(board.word, returnValues):
+        print(x)
+    
     return returnValues
 
 
