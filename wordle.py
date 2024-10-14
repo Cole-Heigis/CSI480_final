@@ -1,19 +1,15 @@
-#words from https://github.com/tabatkins/wordle-list
+# words from https://github.com/tabatkins/wordle-list
+# file for game logic
+
 import random
 from colorama import Fore, Back, Style
-MAX_TRIES = 4
-NUM_BOARDS = 8
+from mcts import MCTS
+from board import MAX_TRIES, NUM_BOARDS, evalNoPrint, Board
+
 game = []
 wordFile = open('words.txt', 'r')
 validWords = wordFile.read()
 validWords = validWords.split('\n')\
-
-    
-class Board:
-    def __init__(self, word):
-        self.word = word
-        self.solved = False
-        self.board = [[] for x in range(MAX_TRIES+1)]
 
 def getRandWord():
     index = random.randrange(0, len(validWords))
@@ -31,7 +27,7 @@ def getValidMoves(words, guess):
         validMoves.append(word)
     return validMoves
 
-
+# By cole, I accidentally removed it and a git conflict prevented me from restoring it properly.
 def eval(board, guessWord, guessNum):
     returnValues = [0, 0, 0, 0, 0]
     for pastGuessWord in board.board:
@@ -48,7 +44,7 @@ def eval(board, guessWord, guessNum):
                     returnValues[i] = 0
             print(Style.RESET_ALL)
     for i in range(MAX_TRIES - guessNum):
-        print(Back.WHITE+ '_____', end = '')    
+        print(Back.WHITE+ '_____', end = '')
         print(Style.RESET_ALL)
 
     if guessWord == board.word:
@@ -64,7 +60,7 @@ def eval(board, guessWord, guessNum):
     print('\n')
     for x in getValidMoves(board.word, returnValues):
         print(x)
-    
+
     return returnValues
 
 
@@ -81,32 +77,27 @@ def play(words):
                 playing = (sum(eval(board, guess, guessNum)) < 10)
             guessNum += 1
 
-if __name__=="__main__": 
-    words = [getRandWord() for _ in range(NUM_BOARDS)]
-    for word in words:
-        game.append(Board(word))
-    play(words)
+# play with the MCTS file
+def playWithMcts(words):
+    print(words)
+    guess_num = 0
+    playing = True
+    # Initialize the MCTS with one of the boards
+    mcts = MCTS(Board(words[0]), validWords)  # Pass the board and the validWords to MCTS
 
+    while playing:
+        mcts.search(time_limit=1)  # Let MCTS search for the best move
+        # Get the best child from MCTS, and determine the best guess
+        best_node = mcts.root.best_child()  # Get the best child node
+        best_guess = best_node.board.word  # Assuming this is how you want to determine the best guess
+        for board in game:
+            board.board[guess_num] = best_guess
+            playing = sum(eval(board, best_guess, guess_num)) < 10
 
-
-# its the eval function but it does no print anything (for ai mostly)
-def evalNoPrint(guessWord, board):
-    score = 0
-
-    # if the guess letter is in the right spot add 2, if its just in the word add 1
-    for i in range(5):
-        if guessWord[i] == board.word[i]:
-            score += 2
-        elif guessWord[i] in board.word:
-            score += 1
-
-    # if the word is completly wrong make it a negative number
-    if score == 0:
-        return -1
-    
-    return score
-    
-
+        guess_num += 1
+        if guess_num >= MAX_TRIES:
+            print("Out of time")
+            break
 
 
 # goes through every valid move and gets the one with the highest value
@@ -121,3 +112,8 @@ def findBestMove(validMoves):
     
     return move
 
+if __name__=="__main__":
+    words = [getRandWord() for _ in range(NUM_BOARDS)]
+    for word in words:
+        game.append(Board(word))
+    playWithMcts(words) # Change based on version you want to run
