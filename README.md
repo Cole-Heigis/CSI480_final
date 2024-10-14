@@ -33,7 +33,7 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
 ### Running the Project
 1. Run the main script or entry point:
     ```bash
-    python worlde.py
+    python wordle.py
     ```
 ## License
 
