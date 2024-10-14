@@ -2,11 +2,9 @@
 # file for game logic
 
 import random
-
-import board
-from board import Board, evalNoPrint, MAX_TRIES, eval
 from colorama import Fore, Back, Style
 from mcts import MCTS
+from board import MAX_TRIES, NUM_BOARDS, evalNoPrint, Board
 
 game = []
 wordFile = open('words.txt', 'r')
@@ -28,6 +26,43 @@ def getValidMoves(words, guess):
                 break
         validMoves.append(word)
     return validMoves
+
+# By cole, I accidentally removed it and a git conflict prevented me from restoring it properly.
+def eval(board, guessWord, guessNum):
+    returnValues = [0, 0, 0, 0, 0]
+    for pastGuessWord in board.board:
+        if pastGuessWord:
+            for i in range(5):
+                if pastGuessWord[i] == board.word[i]:
+                    print(Back.GREEN + pastGuessWord[i], end = '')
+                    returnValues[i] = 2
+                elif pastGuessWord[i] in board.word:
+                    print(Back.YELLOW + pastGuessWord[i], end = '')
+                    returnValues[i] = 1
+                else:
+                    print(Back.WHITE+ pastGuessWord[i], end = '')
+                    returnValues[i] = 0
+            print(Style.RESET_ALL)
+    for i in range(MAX_TRIES - guessNum):
+        print(Back.WHITE+ '_____', end = '')
+        print(Style.RESET_ALL)
+
+    if guessWord == board.word:
+        board.solved = True
+        print("YOU WON!!!")
+        for board in game:
+            if not board.solved:
+                return returnValues
+        return returnValues
+    if guessNum >= MAX_TRIES:
+        print("Out of time")
+        return returnValues
+    print('\n')
+    for x in getValidMoves(board.word, returnValues):
+        print(x)
+
+    return returnValues
+
 
 def play(words):
     print(words)
@@ -78,7 +113,7 @@ def findBestMove(validMoves):
     return move
 
 if __name__=="__main__":
-    words = [getRandWord() for _ in range(board.NUM_BOARDS)]
+    words = [getRandWord() for _ in range(NUM_BOARDS)]
     for word in words:
         game.append(Board(word))
     playWithMcts(words) # Change based on version you want to run
