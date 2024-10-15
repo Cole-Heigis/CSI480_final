@@ -72,7 +72,12 @@ class MCTS:
 
     def backpropagate(self, node, reward):
         """Backpropagate the result of the simulation to update the node values."""
-
+        node.visits += 1.
+        if reward:
+            self.wins += 1
+            
+        if self.parent:
+            self.parent.backpropagate(reward)
 
 
 # TESTING 
