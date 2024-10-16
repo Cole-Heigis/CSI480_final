@@ -3,7 +3,6 @@ import math
 import random
 import time
 from collections import Counter
-
 from colorama import Back, Style
 
 #from board import MAX_TRIES
@@ -15,10 +14,12 @@ from colorama import Back, Style
 MAX_TRIES = 20
 NUM_BOARDS = 8
 
+#Gets one of the words from the list randomly, used for when picking the wordle word
 def getRandWord():
     index = random.randrange(0, len(validWords))
     return validWords[index]
 
+#Evaluates the word guessed based on the correct word
 def evaluate(word1, word2):
   #if the guess letter is in the right spot add 2 to score, if its just in the word add 1 to score
   score = 0 
@@ -27,9 +28,9 @@ def evaluate(word1, word2):
           score += 2
       elif word1[i] in word2:
           score += 1
-  #print(word1, "+", word2, '=', score)
   return score #If you evaluate team and meet it returns 7 instead of 6
 
+#Gets all the words it could be based off the information we currently have
 def get_valid_moves(valid_word_list, guess, correct_word):
     validMoves = []
     invalidMoves = []
@@ -62,6 +63,7 @@ def get_valid_moves(valid_word_list, guess, correct_word):
 
     return validMoves
 
+#Same as get_valid_moves but for all the boards
 def get_game_valid_moves(boards, guess):
   valid_moves =[]
   for board in boards:
@@ -69,8 +71,8 @@ def get_game_valid_moves(boards, guess):
   valid_moves = list(set(node_to_string(valid_moves)))
   valid_moves = [Node(move) for move in valid_moves]
   return valid_moves
-#This class is the game
 
+#This class is the game, allows us to have multiple boards for octordle
 class Game:
   def __init__(self, validWords):
       self.boards = [Board(validWords) for _ in range(NUM_BOARDS)]
@@ -78,6 +80,7 @@ class Game:
      for board in self.boards:
         board.play(word_played)
 
+#A single wordle board, one game of wordle
 class Board:
   def __init__(self, valid_words):
     self.valid_words = [Node(valid_word) for valid_word in valid_words]
@@ -89,6 +92,7 @@ class Board:
     self.guess_number = 0
     self.play(self.current_guess.word) #We start with adieu every time so we automatically play it when the board is created
   
+  #Plays a move based on a guess
   def play(self, word_played):
     if not self.solved:
       if word_played in validWords:
@@ -118,14 +122,14 @@ def get_bad_letters(guess, correct):
              yellows.append((guess[i], i))
   return bad_letters, greens, yellows
 
-
+#Turns a list of Nodes into a list of strings for the words
 def node_to_string(node_list):
   string_list = []
   for x in node_list:
     string_list.append(x.word)
   return string_list 
 
-
+#Each word is its own Node
 class Node:
   def __init__(self, word, parent = None):
     self.word = word
@@ -138,12 +142,13 @@ class Node:
     """Return the child with the best UCT value."""
     return max(self.children, key=lambda child: child.uct_value(self.visits))
 
-  def uct_value(self, total_visits): #Total visits will always be self.visits (Idk if it is correct)
+  def uct_value(self): #Total visits will always be self.visits (Idk if it is correct)
       """Calculate the UCT value for this node."""
       """Adapted from: https://ai-boson.github.io/mcts/"""
       if self.visits == 0:
           return float('inf')  # Ensure unvisited nodes are prioritized
-      return self.value / self.visits + 1.41 * (math.sqrt(math.log(total_visits) / self.visits))
+      return self.value / self.visits + 1.41 * (math.sqrt(math.log(self.parent.visits) / self.visits))
+      
 
 
 class MCTS:
@@ -170,57 +175,12 @@ class MCTS:
           score = 0
           child.children = get_game_valid_moves(self.game.boards, self.root.word)
           for subchild in child.children:
-            score += evaluate(child.word, subchild.word)
+              score += evaluate(child.word, subchild.word)
           if score > top_score:
             top_score = score
             best_child = child
       print(best_child.word)
       return best_child.word
-    
-    def expansion2():
-       top_score = 0
-       best_child = None
-       
-       return
-      # for i in self.root.children:
-      #   #best_child = self.select(node)
-      #   best_child = i
-      #   best_child.visits += 1
-      #   #Finds all valid moves of the child node and that list becomes the node's children
-      #   best_child.children = get_valid_moves(node_to_string(self.root.children), self.board.guesses[0], self.board.correct_word)
-      #   #Simulates a random game if the child node was the move selected
-      #   self.simulate(best_child) #NOT DONE
-    
-    def simulate(self, node):
-        """Simulate a random game from the current node."""
-        #This is where we want to test the node based on all the other valid children 
-        for child1 in node.children:
-          for child2 in node.children:
-            node.value += evaluate(child1.word, child2.word)
-
-    def search(self, time_limit, start_time, current_node):
-        """Conduct MCTS for a specified time limit."""
-        # if we are starting here make sure current_node is set to the root
-        # do we need to do this or..... ??!?!?!?!?
-        if not current_node:
-            current_node = self.root
-
-        #actually searching
-        best_eval: float = float("-inf")  # arbitrarily low starting point
-        for move in getValidMoves(self.valid_words):
-            # Update time
-            current_time = time.time() - start_time
-            print(current_time)
-
-            # Check time
-            if current_time > time_limit:
-                return best_eval
-
-            # Sim
-            self.simulate(Node(current_node.board, current_node))
-            best_eval = max(best_eval, self.backpropagate(current_node, "???REWARD????"))
-
-        return best_eval
 
 def eval(game, guessNum):
         bad_boards = []
