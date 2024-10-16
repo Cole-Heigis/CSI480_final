@@ -24,7 +24,7 @@ def evaluate(word1, word2):
           score += 2
       elif word1[i] in word2:
           score += 1
-  #print(word1, "+", word2, '=', score)
+  print(word1, "+", word2, '=', score)
   return score #If you evaluate team and meet it returns 7 instead of 6
 
 def get_valid_moves(valid_word_list, guess, correct_word):
@@ -116,7 +116,7 @@ class MCTS:
             node = node.best_child()  # Traverse to the best child
         return node
 
-    def evaluate(self, node : Node):
+    def expansion(self, node : Node):
       """The goal of evaluate is to find the most promising child node and simulating a game based on that node"""
       #Finds the most promising child node and indicates it has been visited
       for i in self.root.children:
@@ -172,5 +172,5 @@ if __name__ == "__main__":
     
     wordle_board = Board(validWords)
     monte_carlo = MCTS(wordle_board)
-    monte_carlo.evaluate(monte_carlo.root)
+    monte_carlo.expansion(monte_carlo.root)
     print(monte_carlo.root.best_child().word)
