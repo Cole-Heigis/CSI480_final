@@ -202,12 +202,24 @@ class MCTS:
 
 def eval(board, guessNum):
         for pastGuessWord in board.board:
+            real_count = Counter(pastGuessWord)
+            guessCount = {}
+
             if pastGuessWord:
                 for i in range(5):
+                    if i in guessCount:
+                      guessCount[i]  += 1
+                    else:
+                      guessCount[i]  = 1
+
                     if pastGuessWord[i] == board.correct_word[i]:
                         print(Back.GREEN + pastGuessWord[i], end = '')
                     elif pastGuessWord[i] in board.correct_word:
-                        print(Back.YELLOW + pastGuessWord[i], end = '')
+                      
+                        if guessCount[i] < real_count[i]:
+                          print(Back.YELLOW + pastGuessWord[i], end = '')
+                        else:
+                          print(Back.WHITE+ pastGuessWord[i], end = '')
                     else:
                         print(Back.WHITE+ pastGuessWord[i], end = '')
                 print(Style.RESET_ALL)
