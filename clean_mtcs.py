@@ -87,38 +87,21 @@ class Board:
         self.guess_number += 1
 
 
-from collections import Counter
-
-
 def get_bad_letters(guess, correct):
-    bad_letters = []
-    greens = []
-    yellows = []
+  bad_letters = []
+  greens = []
+  yellows = []
+  # count_correct = Counter(correct)
+  # count_guess = Counter(guess)
+  for i in range(5):
 
-    # Count occurrences of each letter in the correct word and the guess
-    count_correct = Counter(correct)
-    count_guess = Counter(guess)
-
-    # Track how many times we've already added a letter to greens/yellows
-    used_counts = Counter()
-
-    for i in range(5):
-        if guess[i] not in correct:
-            bad_letters.append(guess[i])
-        elif guess[i] == correct[i]:
-            if used_counts[guess[i]] < count_correct[guess[i]]:
-                greens.append((guess[i], i))
-                used_counts[guess[i]] += 1
-            else:
-                bad_letters.append(guess[i])
-        elif guess[i] in correct:
-            if used_counts[guess[i]] < count_correct[guess[i]]:
-                yellows.append((guess[i], i))
-                used_counts[guess[i]] += 1
-            else:
-                bad_letters.append(guess[i])
-
-    return bad_letters, greens, yellows
+          if guess[i] not in correct:
+             bad_letters.append(guess[i])
+          elif guess[i] == correct[i]:
+             greens.append((guess[i], i))
+          elif guess[i] in correct:
+             yellows.append((guess[i], i))
+  return bad_letters, greens, yellows
 
 
 def node_to_string(node_list):
