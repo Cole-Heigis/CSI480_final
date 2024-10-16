@@ -115,7 +115,7 @@ class Node:
 
   def best_child(self):
     """Return the child with the best UCT value."""
-    return max(self.children, key=lambda child: child.utc_value(self.visits))
+    return max(self.children, key=lambda child: child.uct_value(self.visits))
 
   def uct_value(self, total_visits): #Total visits will always be self.visits (Idk if it is correct)
       """Calculate the UCT value for this node."""
