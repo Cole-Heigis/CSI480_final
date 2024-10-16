@@ -12,6 +12,9 @@ import time
 MAX_TRIES = 4
 NUM_BOARDS = 8
 
+wordFile = open('words.txt', 'r')
+validWords = wordFile.read().splitlines()
+
 def getRandWord():
     index = random.randrange(0, len(validWords))
     return validWords[index]

@@ -3,21 +3,22 @@
 import unittest
 import time
 # import wordle
-from clean_mtcs import Board, MCTS
+from clean_mtcs import Board, MCTS, score_word
 
+# print(score_word("adieu", "adieu"))
 game = []
 wordFile = open('words.txt', 'r')
-validWords = wordFile.read()
-validWords = validWords.split('\n')
+valid_words = wordFile.read().splitlines()
+wordFile.close()
 
 
 class MTCSTestCase(unittest.TestCase):
     def test_initialization(self):
-        board_game = Board(validWords)
+        board_game = Board(valid_words)
         self.assertIsInstance(board_game, Board)
 
     def test_game(self):
-        board_game = Board(validWords)
+        board_game = Board(valid_words)
         monte_carlo = MCTS(board_game)
         monte_carlo.expansion(monte_carlo.root)
         print(monte_carlo.root.best_child().word)
@@ -25,7 +26,7 @@ class MTCSTestCase(unittest.TestCase):
 
     def test_time(self):
         self.start_time = time.time()
-        board_game = Board(validWords)
+        board_game = Board(valid_words)
         monte_carlo = MCTS(board_game)
         monte_carlo.expansion(monte_carlo.root)
         print(monte_carlo.root.best_child().word)
