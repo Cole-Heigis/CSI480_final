@@ -2,6 +2,7 @@
 import math
 import random
 import time
+from collections import Counter
 
 from colorama import Back, Style
 
@@ -100,18 +101,23 @@ class Board:
         self.guesses.append(word_played)
         self.guess_number += 1
 
+
 def get_bad_letters(guess, correct):
   bad_letters = []
   greens = []
   yellows = []
+  # count_correct = Counter(correct)
+  # count_guess = Counter(guess)
   for i in range(5):
-      if guess[i] not in correct:
-         bad_letters.append(guess[i])
-      elif guess[i] == correct[i]:
-         greens.append((guess[i], i))
-      elif guess[i] in correct:
-         yellows.append((guess[i], i))
+
+          if guess[i] not in correct:
+             bad_letters.append(guess[i])
+          elif guess[i] == correct[i]:
+             greens.append((guess[i], i))
+          elif guess[i] in correct:
+             yellows.append((guess[i], i))
   return bad_letters, greens, yellows
+
 
 def node_to_string(node_list):
   string_list = []
@@ -221,15 +227,27 @@ def eval(game, guessNum):
         for board in game.boards:
           print(board.correct_word)
           for pastGuessWord in board.board:
-              if pastGuessWord:
-                  for i in range(5):
-                      if pastGuessWord[i] == board.correct_word[i]:
-                          print(Back.GREEN + pastGuessWord[i], end = '')
-                      elif pastGuessWord[i] in board.correct_word:
+            real_count = Counter(pastGuessWord)
+            guessCount = {}
+
+            if pastGuessWord:
+                for i in range(5):
+                  if i in guessCount:
+                    guessCount[i]  += 1
+                  else:
+                    guessCount[i]  = 1
+
+                    if pastGuessWord[i] == board.correct_word[i]:
+                        print(Back.GREEN + pastGuessWord[i], end = '')
+                    elif pastGuessWord[i] in board.correct_word:
+                    
+                      if guessCount[i] < real_count[i]:
                           print(Back.YELLOW + pastGuessWord[i], end = '')
                       else:
-                          print(Back.WHITE+ pastGuessWord[i], end = '')
-                  print(Style.RESET_ALL)
+                        print(Back.WHITE+ pastGuessWord[i], end = '')
+                    else:
+                        print(Back.WHITE+ pastGuessWord[i], end = '')
+                print(Style.RESET_ALL)
           for i in range(MAX_TRIES - guessNum):
               print(Back.WHITE+ '_____', end = '')
               print(Style.RESET_ALL)
