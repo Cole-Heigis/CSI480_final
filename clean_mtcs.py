@@ -26,11 +26,18 @@ def evaluate(word1, word2):
 def get_valid_moves(valid_word_list, guess, correct_word):
     validMoves = []
     invalidMoves = []
+    bad_letters = score_word(guess, correct_word)
     for word in valid_word_list: #look through all words
-        if 0 in score_word(word, correct_word):
-           invalidMoves.append(word)
-        else:
+        goodWord = True
+        for letter in bad_letters:
+            if letter in word:
+              goodWord = False
+        if goodWord:
           validMoves.append(Node(word))
+        # if 0 in score_word(word, correct_word):
+        #    invalidMoves.append(word)
+        # else:
+        #   validMoves.append(Node(word))
     print(len(validMoves))
 
     return validMoves
@@ -63,20 +70,15 @@ class Board:
         self.guesses.append(word_played)
         self.guess_number += 1
 
-def score_word(word, correct):
-  returnValues = [0, 0, 0, 0, 0]
+def score_word(guess, correct):
+  bad_letters = []
   for i in range(5):
       # print(word)
       # print(correct)
       # print(i)
-      if word[i] == correct[i]:
-          
-          returnValues[i] = 2
-      elif word[i] in correct:
-          returnValues[i] = 1
-      else:
-          returnValues[i] = 0
-  return returnValues
+      if guess[i] not in correct:
+         bad_letters.append(guess[i])
+  return bad_letters
 
 
 
