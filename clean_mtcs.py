@@ -169,7 +169,18 @@ class MCTS:
       top_score = 0
       best_child = None
       i = 0
+      #setting max amount of seconds to expand
+      max_time = 20
+
+      #start timer
+      start_time = time.time()
       for child in self.children:
+          # update timer
+          current_time = time.time() - start_time
+          # check time
+          if current_time >= max_time:
+             return best_child.word
+
           i+=1
           #print(i, "/", len(self.children), end = '')
           score = 0
