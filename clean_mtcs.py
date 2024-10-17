@@ -187,26 +187,15 @@ def eval(game, guessNum):
         for board in game.boards:
           print(board.correct_word)
           for pastGuessWord in board.board:
-            real_count = Counter(pastGuessWord)
-            guessCount = {}
-
             if pastGuessWord:
                 for i in range(5):
-                  if i in guessCount:
-                    guessCount[i]  += 1
+                  if pastGuessWord[i] == board.correct_word[i]:
+                    print(Back.GREEN + pastGuessWord[i], end = '')
+                  elif pastGuessWord[i] in board.correct_word:
+                    print(Back.YELLOW + pastGuessWord[i], end = '')
                   else:
-                    guessCount[i]  = 1
-
-                    if pastGuessWord[i] == board.correct_word[i]:
-                        print(Back.GREEN + pastGuessWord[i], end = '')
-                    elif pastGuessWord[i] in board.correct_word:
-                    
-                      if guessCount[i] < real_count[i]:
-                          print(Back.YELLOW + pastGuessWord[i], end = '')
-                      else:
-                        print(Back.WHITE+ pastGuessWord[i], end = '')
-                    else:
-                        print(Back.WHITE+ pastGuessWord[i], end = '')
+                    print(Back.WHITE + pastGuessWord[i], end = '')
+                  
                 print(Style.RESET_ALL)
           for i in range(MAX_TRIES - guessNum):
               print(Back.WHITE+ '_____', end = '')
@@ -214,7 +203,7 @@ def eval(game, guessNum):
           if board.board[guessNum-1] == board.correct_word:
              bad_boards.append(board)
         for board in bad_boards:
-           game.boards.remove(board)    
+           game.boards.remove(board)   
 
 
 # TESTING
