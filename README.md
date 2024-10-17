@@ -25,7 +25,7 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
     ```
 3. Install dependencies:
     ```bash
-    pip install colorama
+    pip install tkinter
 
 
 ## Usage
@@ -33,7 +33,7 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
 ### Running the Project
 1. Run the main script or entry point:
     ```bash
-    python wordle.py
+    python clean_mtcs.py
     ```
 ## License
 
