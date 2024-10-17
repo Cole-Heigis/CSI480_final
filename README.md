@@ -27,7 +27,6 @@ Our CSI-480 Topics in Artifial Intelligence final is a project utilizing a modif
     ```bash
     pip install tkinter
 
-
 ## Usage
 
 ### Running the Project
